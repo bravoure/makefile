@@ -4,6 +4,7 @@ welcome:
 up:
 		@echo "Starting up project."
 		make composer-install
+		@echo "party is on"
 		docker-compose up --scale composer=0 --scale php-cs-fixer=0 --remove-orphans
 
 up-frontend:
