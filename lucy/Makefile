@@ -152,7 +152,7 @@ set-login-password:
 		mysql --host=127.0.01 --user=craft --password=craft --database=craft  --port=3307 --execute='UPDATE users SET password = "$2y$13$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
 
 delete-merged-branches:
-	git branch --merged| egrep -v "(^\*|master|develop|accept|test)" | xargs git branch -d
+	git branch --merged| egrep -v "(^\*|main|develop|accept)" | xargs git branch -d
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/lucy/Makefile
