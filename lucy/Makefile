@@ -54,7 +54,7 @@ down:
 
 stop:
 		@echo "Stopping all running containers"
-		docker stop $$(docker ps -a -q);
+		docker stop $$(docker ps -a -q) || true;
 
 sync:
 		@echo "Syncing project. This can take a minute."
