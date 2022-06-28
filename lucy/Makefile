@@ -49,7 +49,6 @@ up-stop-local-production-build:
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn build && yarn start
 
 install:
-		@echo "\033[0;31mWARNING, change env.example to new vault. Afterwards delete this line :) \033[0m"
 		@echo "\033[0;32m***************************************************************\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
@@ -62,6 +61,8 @@ install:
 		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
 		make stop
 		make composer-install
+		docker-compose up -d mariadb
+		sleep 2
 		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --language en-GB --password bravoure --site-name "change_to_client_name (EN)" --site-url @siteUrlClientNameEnglish
 #		docker-compose run --rm queue php craft setup/php-session-table
 		docker-compose run --rm queue php craft project-seeder-module/seeder/seed-db
@@ -74,6 +75,8 @@ install:
 		@echo "\033[0;32m****               \033[0mMake something epic!\033[0;32m              ****\033[0m"
 		@echo "\033[0;32m****                                                 ****\033[0m"
 		@echo "\033[0;32m*********************************************************\033[0m"
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
+		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
 
 down:
 		@echo "Stopping project."
