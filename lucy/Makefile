@@ -2,51 +2,78 @@ welcome:
 		@echo "Hi I'm Lucy. Run \"make up\" to start the project"
 
 up:
+		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
+		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m***************************************************************\033[0m"
+		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
+		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
 		@echo "Starting up project."
 		make composer-install
-		@echo "party is on"
-		docker-compose up --scale composer=0 --scale php-cs-fixer=0 --remove-orphans
+		docker-compose up -d webserver queue redis backend mariadb
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
+		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
 
 up-frontend:
-		@echo "Starting up project."
-		docker-compose up --scale composer=0 --scale php-cs-fixer=0 --scale mariadbdzbl=0 --scale mariadb=0 --scale queue=0 --scale redis=0
+		@echo "Deprecated: please use make up"
 
 up-fast:
+		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
+		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m***************************************************************\033[0m"
 		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
-		docker-compose up --scale composer=0 --scale php-cs-fixer=0
-
-up-max:
-		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
-		docker-compose up --scale composer=0 --scale queue=2 --scale backend=1 --scale php-cs-fixer=0
-
-up-stop:
-		@echo "Stopping al containers and starting up project."
-		make stop
-		make composer-install
-		docker-compose up webserver
+		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
+		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
+		docker-compose up -d webserver queue redis backend mariadb
+		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
 
 up-stop-local-production-build:
-		@echo "Stopping al containers and starting up project."
-		make stop
+		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
+		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
+		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
+		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
+		@echo "Starting local production build"
 		rm -rf frontend/.next
 		make composer-install
-		docker-compose up -d webserver
-		docker-compose run --rm frontend sh -c 'yarn install && yarn build && yarn start'
-
-up-fe-logs:
-		@echo "Starting up project."
-		make composer-install
-		docker-compose up --scale composer=0 --scale php-cs-fixer=0 -d
-		docker-compose logs -f frontend
+		docker-compose up -d webserver queue redis backend mariadb
+		cd frontend && yarn install && npx browserslist@latest --update-db && yarn build && yarn start
 
 install:
-		cp backend/.env.docker.example backend/.env
-		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >backend/config/local_config.php
+		@echo "\033[0;31mWARNING, change env.example to new vault. Afterwards delete this line :) \033[0m"
+		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
+		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m***************************************************************\033[0m"
+		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
+		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
+		printf "%s\n" "<?php" "	return [" "'allowAdminChanges' => false" "];" >backend/config/local_config.php
+		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
 		make stop
 		make composer-install
-		docker-compose run queue ./craft install/craft
-		docker-compose down
-		docker-compose up webserver
+		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --language en-GB --password bravoure --site-name "change_to_client_name (EN)" --site-url @siteUrlClientNameEnglish
+#		docker-compose run --rm queue php craft setup/php-session-table
+		docker-compose run --rm queue php craft project-seeder-module/seeder/seed-db
+		docker-compose run --rm queue php craft resave/entries
+		make down
+		docker-compose up -d webserver queue redis backend mariadb
+		@echo "\033[0;32m*********************************************************\033[0m"
+		@echo "\033[0;32m****                                                 ****\033[0m"
+		@echo "\033[0;32m****   \033[0mhttp://localhost:8080 ready for some work!\033[0;32m    ****\033[0m"
+		@echo "\033[0;32m****               \033[0mMake something epic!\033[0;32m              ****\033[0m"
+		@echo "\033[0;32m****                                                 ****\033[0m"
+		@echo "\033[0;32m*********************************************************\033[0m"
 
 down:
 		@echo "Stopping project."
@@ -59,21 +86,19 @@ stop:
 sync:
 		@echo "Syncing project. This can take a minute."
 		make composer-install
-		docker-compose run --rm frontend yarn install
-		docker-compose run --rm queue ./craft migrate/all --no-backup --interactive=0
-		docker-compose run --rm queue ./craft project-config/apply
+		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker-compose run --rm queue php craft project-config/apply
 
 sync-fast:
 		@echo "Syncing project. This can take a minute. \033[0;31mWARNING, without yarn and composer install \033[0m"
-		docker-compose run --rm queue ./craft migrate/all
-		docker-compose run --rm queue ./craft project-config/apply
+		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker-compose run --rm queue php craft project-config/apply
 
 sync-force:
 		@echo "Syncing project. This can take a minute."
 		make composer-install
-		docker-compose run --rm frontend yarn install
-		docker-compose run --rm queue ./craft migrate/all --no-backup --interactive=0
-		docker-compose run --rm queue ./craft project-config/apply --force
+		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker-compose run --rm queue php craft project-config/apply --force
 
 build:
 		docker-compose build
@@ -103,11 +128,6 @@ apply-code-styles:
 		@echo "Applying code styles"
 		docker-compose run --rm php-cs-fixer
 
-logs-frontend:
-		docker-compose logs frontend
-
-logs-frontend-follow:
-		docker-compose logs -f frontend
 
 logs-backend:
 		docker-compose logs backend
@@ -139,8 +159,6 @@ logs-feedme:
 logs-feedme-follow:
 		docker-compose exec backend tail -f /var/www/backend/storage/logs/feedme.log
 
-restart-frontend:
-		docker-compose restart frontend
 
 restart-webserver:
 		docker-compose restart webserver
@@ -152,7 +170,7 @@ set-login-password:
 		mysql --host=127.0.01 --user=craft --password=craft --database=craft  --port=3307 --execute='UPDATE users SET password = "$2y$13$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
 
 delete-merged-branches:
-	git branch --merged| egrep -v "(^\*|main|develop|accept)" | xargs git branch -d
+	git branch --merged| egrep -v "(^\*|master|develop|accept|test)" | xargs git branch -d
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/lucy/Makefile
