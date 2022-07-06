@@ -47,6 +47,7 @@ up-stop-local-production-build:
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn build && yarn start
 
 install:
+		@echo "\033[0;31mWARNING, change env.example to new vault. Afterwards delete this line :) \033[0m"
 		@echo "\033[0;32m***************************************************************\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
