@@ -60,7 +60,7 @@ install:
 		make stop
 		make composer-install
 		docker-compose up -d mariadb
-		sleep 2
+		sleep 10
 		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --language en-GB --password bravoure --site-name "change_to_client_name (EN)" --site-url @siteUrlClientNameEnglish
 #		docker-compose run --rm queue php craft setup/php-session-table
 		docker-compose run --rm queue php craft project-seeder-module/seeder/seed-db
