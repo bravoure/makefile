@@ -16,8 +16,6 @@ up:
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
 
-up-frontend:
-		@echo "Deprecated: please use make up"
 
 up-fast:
 		@echo "\033[0;32m***************************************************************\033[0m"
@@ -26,18 +24,20 @@ up-fast:
 		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
 		docker-compose up -d webserver queue redis backend mariadb
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
 
-up-stop-local-production-build:
+up-production-build:
 		@echo "\033[0;32m***************************************************************\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
 		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
 		@echo "Starting local production build"
@@ -47,7 +47,6 @@ up-stop-local-production-build:
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn build && yarn start
 
 install:
-		@echo "\033[0;31mWARNING, change env.example to new vault. Afterwards delete this line :) \033[0m"
 		@echo "\033[0;32m***************************************************************\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
@@ -81,10 +80,6 @@ down:
 		@echo "Stopping project."
 		docker-compose down
 
-stop:
-		@echo "Stopping all running containers"
-		docker stop $$(docker ps -a -q) || true;
-
 sync:
 		@echo "Syncing project. This can take a minute."
 		make composer-install
@@ -101,13 +96,6 @@ sync-force:
 		make composer-install
 		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
 		docker-compose run --rm queue php craft project-config/apply --force
-
-build:
-		docker-compose build
-
-yarn-add:
-		@read -p "Enter Package: " package; \
-		docker-compose exec frontend yarn add $$package
 
 composer-dump:
 		docker-compose run --rm composer composer dump
@@ -154,13 +142,6 @@ logs-craft:
 
 logs-craft-follow:
 		docker-compose exec backend tail -f /var/www/backend/storage/logs/web.log
-
-logs-feedme:
-		docker-compose exec backend tail /var/www/backend/storage/logs/feedme.log
-
-logs-feedme-follow:
-		docker-compose exec backend tail -f /var/www/backend/storage/logs/feedme.log
-
 
 restart-webserver:
 		docker-compose restart webserver
