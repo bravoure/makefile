@@ -157,3 +157,6 @@ delete-merged-branches:
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/lucy/Makefile
+
+update-docker-compose:
+		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
