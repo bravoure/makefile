@@ -152,6 +152,10 @@ local-config:
 set-login-password:
 		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users SET password = "$2y$13$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
 
+set-access-tokens:
+		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "csAyjOAtaxecSaivPnqR0oY3pBKryErL" WHERE name = "Server to server"';
+		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "X3B60fZSEBkt2cJqz6McUJwlwUJN4o4K" WHERE name = "Client to server"';
+		
 delete-merged-branches:
 	git branch --merged| egrep -v "(^\*|master|develop|accept|test|main)" | xargs git branch -d
 
