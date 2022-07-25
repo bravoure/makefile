@@ -37,7 +37,6 @@ up-production-build:
 		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m***************************************************************\033[0m"
-		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
 		@echo "Starting local production build"
