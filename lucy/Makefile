@@ -150,7 +150,7 @@ local-config:
 		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >backend/config/local_config.php
 
 set-login-password:
-		mysql --host=127.0.01 --user=craft --password=craft --database=craft  --port=3307 --execute='UPDATE users SET password = "$2y$13$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
+		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users SET password = "$2y$13$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
 
 delete-merged-branches:
 	git branch --merged| egrep -v "(^\*|master|develop|accept|test|main)" | xargs git branch -d
