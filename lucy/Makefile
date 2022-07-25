@@ -56,7 +56,6 @@ install:
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
 		printf "%s\n" "<?php" "	return [" "'allowAdminChanges' => false" "];" >backend/config/local_config.php
 		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
-		make stop
 		make composer-install
 		docker-compose up -d mariadb
 		sleep 10
