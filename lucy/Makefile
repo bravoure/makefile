@@ -59,7 +59,7 @@ install:
 		make composer-install
 		docker-compose up -d mariadb
 		sleep 10
-		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --language en-GB --password bravoure --site-name "change_to_client_name (EN)" --site-url @siteUrlClientNameEnglish
+		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --password bravoure --interactive=0
 #		docker-compose run --rm queue php craft setup/php-session-table
 		docker-compose run --rm queue php craft project-seeder-module/seeder/seed-db
 		docker-compose run --rm queue php craft resave/entries
@@ -155,7 +155,10 @@ set-access-tokens:
 		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "X3B60fZSEBkt2cJqz6McUJwlwUJN4o4K" WHERE name = "Client to server"';
 		
 delete-merged-branches:
-	git branch --merged| egrep -v "(^\*|master|develop|accept|test|main)" | xargs git branch -d
+		git branch --merged| egrep -v "(^\*|master|develop|accept|test|main)" | xargs git branch -d
+
+translate:
+		php google-doc-translations.php
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/lucy/Makefile
