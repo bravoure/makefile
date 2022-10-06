@@ -160,6 +160,9 @@ delete-merged-branches:
 translate:
 		php google-doc-translations.php
 
+fix-frontend:
+		cd frontend && yarn install && yarn lint-fix
+
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/lucy/Makefile
 
