@@ -54,7 +54,7 @@ install:
 		@echo "\033[0;32m***************************************************************\033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
-		printf "%s\n" "<?php" "	return [" "'allowAdminChanges' => false" "];" >backend/config/local_config.php
+		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(true); \n }" >backend/config/local_config.php
 		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
 		make composer-install
 		docker-compose up -d mariadb
@@ -153,7 +153,7 @@ set-login-password:
 set-access-tokens:
 		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "csAyjOAtaxecSaivPnqR0oY3pBKryErL" WHERE name = "Server to server"';
 		docker-compose run --rm mariadb mysql --host=mariadb --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "X3B60fZSEBkt2cJqz6McUJwlwUJN4o4K" WHERE name = "Client to server"';
-		
+
 delete-merged-branches:
 		git branch --merged| egrep -v "(^\*|master|develop|accept|test|main)" | xargs git branch -d
 
@@ -168,3 +168,6 @@ update-makefile:
 
 update-docker-compose:
 		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
+
+update-general:
+		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/general-config/main/general.php
