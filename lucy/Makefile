@@ -170,4 +170,4 @@ update-docker-compose:
 		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
 
 update-general:
-		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/general-config/main/general.php
+		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
