@@ -162,12 +162,27 @@ translate:
 
 fix-frontend:
 		cd frontend && yarn install && yarn lint-fix
+update-all:
+		make update-makefile
+		make update-docker-compose
+		make update-general
+		make update-workflows
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/lucy/Makefile
 
 update-docker-compose:
 		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
+
+update-workflows:
+		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/deploy-to-test.yml
+		curl -o .github/workflows/feature-draft-pull-request.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/feature-draft-pull-request.yml
+		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/format-php.yml
+		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-hotfix.yml
+		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-release.yml
+		curl -o .github/workflows/publish-new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/publish-new-release.yml
+		curl -o .github/workflows/pull-request-check.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check.yml
+		curl -o .github/workflows/ready-for-review.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/ready-for-review.yml
 
 update-general:
 		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
