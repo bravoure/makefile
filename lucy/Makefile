@@ -181,7 +181,9 @@ update-workflows:
 		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-hotfix.yml
 		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-release.yml
 		curl -o .github/workflows/publish-new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/publish-new-release.yml
-		curl -o .github/workflows/pull-request-check.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check.yml
+		curl -o .github/workflows/pull-request-check-develop.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-develop.yml
+		curl -o .github/workflows/pull-request-check-main.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-main.yml
+		curl -o .github/workflows/pull-request-check-trigger.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-trigger.yml
 		curl -o .github/workflows/ready-for-review.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/ready-for-review.yml
 
 update-general:
