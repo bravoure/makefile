@@ -54,7 +54,7 @@ install:
 		@echo "\033[0;32m***************************************************************\033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
-		printf "%s\n" "<?php" "	return [" "'allowAdminChanges' => false" "];" >backend/config/local_config.php
+		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" >backend/config/local_config.php
 		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
 		make composer-install
 		docker-compose up -d database
