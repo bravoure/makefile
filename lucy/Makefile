@@ -116,7 +116,6 @@ apply-code-styles:
 		@echo "Applying code styles"
 		docker-compose run --rm php-cs-fixer
 
-
 logs-backend:
 		docker-compose logs backend
 
@@ -162,6 +161,7 @@ translate:
 
 fix-frontend:
 		cd frontend && yarn install && yarn lint-fix
+
 update-all:
 		make update-makefile
 		make update-docker-compose
