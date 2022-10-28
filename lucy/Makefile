@@ -180,6 +180,7 @@ update-workflows:
 		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/format-php.yml
 		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-hotfix.yml
 		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-release.yml
+		curl -o .github/workflows/phone-home.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/phone-home.yml
 		curl -o .github/workflows/publish-new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/publish-new-release.yml
 		curl -o .github/workflows/pull-request-check-develop.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-develop.yml
 		curl -o .github/workflows/pull-request-check-main.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-main.yml
