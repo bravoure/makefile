@@ -121,4 +121,4 @@ delete-merged-branches:
 		git branch --merged| egrep -v "(^\*|master|develop|accept|test)" | xargs git branch -d
 
 update-makefile:
-		curl -o Makefile https://bitbucket.org/bravoure/makefile-sp2/raw/HEAD/Makefile
+		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/master/sp2/Makefile
