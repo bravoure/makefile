@@ -189,3 +189,4 @@ update-workflows:
 
 update-general:
 		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
+		curl -o phpstan.neon https://raw.githubusercontent.com/bravoure/general-config/main/phpstan.neon
