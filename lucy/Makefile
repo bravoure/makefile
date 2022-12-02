@@ -63,6 +63,7 @@ install:
 #		docker-compose run --rm queue php craft setup/php-session-table
 		docker-compose run --rm queue php craft project-seeder-module/seeder/seed-db
 		docker-compose run --rm queue php craft resave/entries
+		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
 		make down
 		docker-compose up -d webserver queue redis backend database
 		@echo "\033[0;32m*********************************************************\033[0m"
