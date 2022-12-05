@@ -1,7 +1,7 @@
 welcome:
 		@echo "Hi I'm Lucy. Run \"make up\" to start the project"
 
-up:
+env-setup:
 		@echo "\033[0;32m***************************************************************\033[0m"
 		@echo "\033[0;32m****                                                       ****\033[0m"
 		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
@@ -10,35 +10,31 @@ up:
 		@echo "\033[0;32m***************************************************************\033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
-		@echo "Starting up project."
+
+freelance-env-setup:
+		test -f backend/.env.freelance.example || (printf "# Ask bravoure to get you .env file contents" > backend/.env.freelance.example && echo "\033[0;32mAsk bravoure to get you .env.freelance.example file contents.\033[0m")
+		test -f frontend/.env.local.freelance || (printf "# Ask bravoure to get you .env file contents" > frontend/.env.local.freelance && echo "\033[0;32mAsk bravoure to get you .env.local.freelance file contents.\033[0m")
+		cp backend/.env.freelance.example backend/.env
+		cp frontend/.env.local.freelance frontend/.env.local
+
+up:
+		@echo "\033[0;32mStarting up project\033[0m"
+		make env-setup
+		make up-part-2
+
+up-f:
+		@echo "\033[0;32mStarting up project (freelancer-mode)\033[0m"
+		make freelance-env-setup
+		make up-part-2
+
+up-part-2:
 		make composer-install
 		docker-compose up -d webserver queue redis backend database
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
 
-
-up-fast:
-		@echo "\033[0;32m***************************************************************\033[0m"
-		@echo "\033[0;32m****                                                       ****\033[0m"
-		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
-		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
-		@echo "\033[0;32m****                                                       ****\033[0m"
-		@echo "\033[0;32m***************************************************************\033[0m"
-		@echo "Starting up project. \033[0;31mWARNING, without composer install \033[0m"
-		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
-		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
-		docker-compose up -d webserver queue redis backend database
-		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
-
 up-production-build:
-		@echo "\033[0;32m***************************************************************\033[0m"
-		@echo "\033[0;32m****                                                       ****\033[0m"
-		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
-		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
-		@echo "\033[0;32m****                                                       ****\033[0m"
-		@echo "\033[0;32m***************************************************************\033[0m"
-		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
-		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
+		make env-setup
 		@echo "Starting local production build"
 		rm -rf frontend/.next
 		make composer-install
@@ -46,15 +42,17 @@ up-production-build:
 		cd frontend && yarn install && npx browserslist@latest --update-db && yarn build && yarn start
 
 install:
-		@echo "\033[0;32m***************************************************************\033[0m"
-		@echo "\033[0;32m****                                                       ****\033[0m"
-		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
-		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
-		@echo "\033[0;32m****                                                       ****\033[0m"
-		@echo "\033[0;32m***************************************************************\033[0m"
-		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
-		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
-		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" >backend/config/local_config.php
+		@echo "\033[0;32mInstalling the project.\033[0m"
+		make env-setup
+		make install-part-2
+
+install-f:
+		@echo "\033[0;32mInstalling the project for a freelancer.\033[0m"
+		make freelance-env-setup
+		make install-part-2
+
+install-part-2:
+		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" > backend/config/local_config.php
 		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
 		make composer-install
 		docker-compose up -d database
@@ -159,6 +157,7 @@ delete-merged-branches:
 
 translate:
 		php google-doc-translations.php
+		docker-compose run --rm php-cs-fixer
 
 fix-frontend:
 		cd frontend && yarn install && yarn lint-fix
