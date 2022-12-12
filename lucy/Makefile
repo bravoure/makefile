@@ -12,8 +12,8 @@ env-setup:
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
 
 freelance-env-setup:
-		test -f backend/.env.freelance.example || (printf "# Ask bravoure to get you .env file contents" > backend/.env.freelance.example && echo "\033[0;32mAsk bravoure to get you .env.freelance.example file contents.\033[0m")
-		test -f frontend/.env.local.freelance || (printf "# Ask bravoure to get you .env file contents" > frontend/.env.local.freelance && echo "\033[0;32mAsk bravoure to get you .env.local.freelance file contents.\033[0m")
+		test -f backend/.env.freelance.example || (printf "# Ask bravoure to get you .env file contents" > backend/.env.freelance.example && echo "\033[0;32mAsk bravoure to get you .env.freelance.example file contents.\033[0m" && false;)
+		test -f frontend/.env.local.freelance || (printf "# Ask bravoure to get you .env file contents" > frontend/.env.local.freelance && echo "\033[0;32mAsk bravoure to get you .env.local.freelance file contents.\033[0m" && false;)
 		cp backend/.env.freelance.example backend/.env
 		cp frontend/.env.local.freelance frontend/.env.local
 
