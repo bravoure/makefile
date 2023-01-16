@@ -190,3 +190,20 @@ update-workflows:
 update-general:
 		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
 		curl -o phpstan.neon https://raw.githubusercontent.com/bravoure/general-config/main/phpstan.neon
+
+test-lighthouse:
+		mkdir -p lighthouse
+		rm -rf lighthouse/mobile
+		rm -rf lighthouse/desktop
+		mkdir -p lighthouse/mobile
+		mkdir -p lighthouse/desktop
+		printf "%s\n" "* \n !.gitignore" >lighthouse/.gitignore
+		@echo "Enter admin url: (like https://accept-admin.oudekerk.nl NO '/')"
+		@read adminUrl; \
+		curl -o lighthouse/urls.txt $$adminUrl/api/lighthouse/list
+		npm install -g lighthouse
+		@echo "\033[0;32m Creating mobile lighthouse tests\033[0m"
+		cd lighthouse/mobile && for url in $$(cat ../urls.txt); do lighthouse "$$url" --chrome-flags="--headless" --view --extra-headers="{\"Authorization\":\"Basic YnJhdm91cmU6ZGV2ZWxvcG1lbnQ=\"}"; done
+		@echo "\033[0;32m Creating desktop lighthouse tests\033[0m"
+		cd lighthouse/mobile && for url in $$(cat ../urls.txt); do lighthouse "$$url" --chrome-flags="--headless" --preset=desktop --view --extra-headers="{\"Authorization\":\"Basic YnJhdm91cmU6ZGV2ZWxvcG1lbnQ=\"}"; done
+		rm lighthouse/urls.txt
