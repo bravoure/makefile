@@ -27,6 +27,23 @@ up-f:
 		make freelance-env-setup
 		make up-part-2
 
+up-c:
+		@if ! grep -q html/backend/web /etc/apache2/sites-available/000-default.conf; then \
+			sudo sed -i 's/html/html\/backend\/web/g' /etc/apache2/sites-available/000-default.conf; \
+		fi
+		@if ! grep -q 8080 /etc/apache2/sites-available/000-default.conf; then \
+			sudo sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf; \
+		fi
+		sudo a2enmod rewrite
+		apache2ctl restart
+		cd backend && composer install
+		cp backend/.env.actions.example backend/.env
+		cp frontend/.env.local.actions frontend/.env.local
+		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false)->devMode(true); \n }" > backend/config/local_config.php
+		cd backend && php craft install/craft --email login@bravoure.nl --password bravoure --interactive=0
+		cd backend && php craft project-seeder-module/seeder/seed-db
+		echo "https://${CODESPACE_NAME}-8080.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}/admin"
+
 up-part-2:
 		make composer-install
 		docker-compose up -d webserver queue redis backend database
@@ -53,7 +70,7 @@ install-f:
 
 install-part-2:
 		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" > backend/config/local_config.php
-		yarn install && yarn husky install && cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && yarn install && yarn husky install
 		make composer-install
 		docker-compose up -d database
 		sleep 10
