@@ -2,84 +2,92 @@ welcome:
 		@echo "Hi I'm SP2. Run \"make up\" to start the project"
 
 up:
-		@echo "Starting up project."
-		docker-compose up -d backend
-		docker-compose run --rm composer composer install
-		docker-compose up
-
-up-stop:
-		@echo "Stopping al containts and starting up project."
-		docker stop $$(docker ps -a -q);
-		docker-compose up -d backend
-		docker-compose run --rm composer composer install
-		docker-compose up
+		@echo "\033[0;32mStarting up project\033[0m"
+		make env-setup
+		make up-part-2
 
 install:
-		cp .env.docker.example .env
-		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >config/local_config.php
-		docker stop $$(docker ps -a -q);
-		docker-compose up -d
-		docker-compose run --rm composer composer install
-		docker-compose run --rm queue php craft install/craft
-		docker-compose down
-		docker-compose up
+		@echo "\033[0;32mInstalling the project.\033[0m"
+		make env-setup
+		make install-part-2
 
-up-fe-logs:
-		@echo "Starting up project."
-		docker-compose up -d backend
-		docker-compose run --rm composer composer install
-		docker-compose up -d
-		docker-compose logs -f frontend
+env-setup:
+		@echo "\033[0;32m***************************************************************\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m****        \033[0mMake sure to install the 1password cli\033[0;32m         ****\033[0m"
+		@echo "\033[0;32m**** \033[0mhttps://developer.1password.com/docs/cli/get-started/\033[0;32m ****\033[0m"
+		@echo "\033[0;32m****                                                       ****\033[0m"
+		@echo "\033[0;32m***************************************************************\033[0m"
+		cat .env.example | ENV=local op inject -f --out-file .env
+
+up-part-2:
+		make composer-install
+		docker-compose up -d webserver queue redis backend database
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
+		cd frontend && yarn install && npx browserslist@latest --update-db && yarn run dev
+
+install-part-2:
+		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" > config/local_config.php
+		make composer-install
+		docker-compose up -d database
+		sleep 10
+		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --password bravoure --interactive=0
+#		docker-compose run --rm queue php craft setup/php-session-table
+		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
+		make down
+		docker-compose up -d webserver queue redis backend database
+		@echo "\033[0;32m*********************************************************\033[0m"
+		@echo "\033[0;32m****                                                 ****\033[0m"
+		@echo "\033[0;32m****   \033[0mhttp://localhost:8080 ready for some work!\033[0;32m    ****\033[0m"
+		@echo "\033[0;32m****               \033[0mMake something epic!\033[0;32m              ****\033[0m"
+		@echo "\033[0;32m****                                                 ****\033[0m"
+		@echo "\033[0;32m*********************************************************\033[0m"
 
 down:
 		@echo "Stopping project."
 		docker-compose down
 
-stop:
-		@echo "Stopping all running containers"
-		docker stop $(docker ps -a -q)
-
 sync:
 		@echo "Syncing project. This can take a minute."
-		docker-compose run --rm composer composer install
-		docker-compose exec frontend yarn install
-		docker-compose exec backend ./craft migrate/all
-		docker-compose exec backend ./craft project-config/apply
+		make composer-install
+		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker-compose run --rm queue php craft project-config/apply
+
+sync-fast:
+		@echo "Syncing project. This can take a minute. \033[0;31mWARNING, without yarn and composer install \033[0m"
+		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker-compose run --rm queue php craft project-config/apply
 
 sync-force:
 		@echo "Syncing project. This can take a minute."
-		docker-compose run --rm composer composer install
-		docker-compose exec frontend yarn install
-		docker-compose exec backend ./craft migrate/all
-		docker-compose exec backend ./craft project-config/apply --force
-
-build:
-		docker-compose build
+		make composer-install
+		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker-compose run --rm queue php craft project-config/apply --force
 
 yarn-add:
 		@read -p "Enter Package: " package; \
 		docker-compose exec frontend yarn add $$package
 
 composer-dump:
-		docker-compose exec backend composer dump
+		docker-compose run --rm composer composer dump
 
 composer-update:
-		docker-compose exec backend composer update
+		docker-compose run --rm composer composer update
 
 composer-require:
 		@read -p "Enter Package: " package; \
-		docker-compose exec backend composer require $$package
+		docker-compose run --rm composer composer require $$package
 
 composer-remove:
 		@read -p "Enter Package: " package; \
-		docker-compose exec backend composer remove $$package
+		docker-compose run --rm composer composer remove $$package
 
 composer-install:
 		docker-compose run --rm composer composer install
 
 apply-code-styles:
 		@echo "Applying code styles"
-		docker-compose exec backend php config/code-style/php-cs-fixer-v2.phar fix
+		docker-compose run --rm php-cs-fixer
 
 logs-frontend:
 		docker-compose logs frontend
@@ -115,7 +123,7 @@ restart-webserver:
 		docker-compose restart webserver
 
 local-config:
-		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >backend/config/local_config.php
+		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >config/local_config.php
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/sp2/Makefile
