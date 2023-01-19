@@ -4,14 +4,14 @@ welcome:
 up:
 		@echo "Starting up project."
 		docker-compose up -d backend
-		docker-compose exec backend composer install
+		docker-compose run --rm composer composer install
 		docker-compose up
 
 up-stop:
 		@echo "Stopping al containts and starting up project."
 		docker stop $$(docker ps -a -q);
 		docker-compose up -d backend
-		docker-compose exec backend composer install
+		docker-compose run --rm composer composer install
 		docker-compose up
 
 install:
@@ -19,15 +19,15 @@ install:
 		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >config/local_config.php
 		docker stop $$(docker ps -a -q);
 		docker-compose up -d
-		docker-compose exec backend composer install
-		docker-compose exec backend ./craft install/craft
+		docker-compose run --rm composer composer install
+		docker-compose run --rm queue php craft install/craft
 		docker-compose down
 		docker-compose up
 
 up-fe-logs:
 		@echo "Starting up project."
 		docker-compose up -d backend
-		docker-compose exec backend composer install
+		docker-compose run --rm composer composer install
 		docker-compose up -d
 		docker-compose logs -f frontend
 
@@ -41,14 +41,14 @@ stop:
 
 sync:
 		@echo "Syncing project. This can take a minute."
-		docker-compose exec backend composer install
+		docker-compose run --rm composer composer install
 		docker-compose exec frontend yarn install
 		docker-compose exec backend ./craft migrate/all
 		docker-compose exec backend ./craft project-config/apply
 
 sync-force:
 		@echo "Syncing project. This can take a minute."
-		docker-compose exec backend composer install
+		docker-compose run --rm composer composer install
 		docker-compose exec frontend yarn install
 		docker-compose exec backend ./craft migrate/all
 		docker-compose exec backend ./craft project-config/apply --force
@@ -75,7 +75,7 @@ composer-remove:
 		docker-compose exec backend composer remove $$package
 
 composer-install:
-		docker-compose exec backend composer install
+		docker-compose run --rm composer composer install
 
 apply-code-styles:
 		@echo "Applying code styles"
@@ -116,9 +116,6 @@ restart-webserver:
 
 local-config:
 		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >backend/config/local_config.php
-		
-delete-merged-branches:
-		git branch --merged| egrep -v "(^\*|master|develop|accept|test)" | xargs git branch -d
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/sp2/Makefile
