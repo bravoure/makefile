@@ -70,7 +70,6 @@ install-f:
 
 install-part-2:
 		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" > backend/config/local_config.php
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && yarn install && yarn husky install && rm .husky/pre-commit && yarn husky add .husky/pre-commit "cd frontend && npx lint-staged"
 		make composer-install
 		docker-compose up -d database
 		sleep 10
@@ -88,6 +87,7 @@ install-part-2:
 		@echo "\033[0;32m****                                                 ****\033[0m"
 		@echo "\033[0;32m*********************************************************\033[0m"
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && yarn install && yarn husky install && rm .husky/pre-commit && yarn husky add .husky/pre-commit "cd frontend && npx lint-staged"
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && yarn install && npx browserslist@latest --update-db && yarn run dev
 
 down:
