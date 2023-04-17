@@ -184,6 +184,13 @@ update-all:
 		make update-docker-compose
 		make update-general
 		make update-workflows
+		make update-wiki
+
+update-wiki:
+		git clone git@github.com:bravoure/lucy.wiki.git wiki-tmp
+		rm -rf wiki-tmp/.git
+		cp -rf wiki-tmp/. wiki
+		rm -rf wiki-tmp
 
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/lucy/Makefile
