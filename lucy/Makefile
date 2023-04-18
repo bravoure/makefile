@@ -188,6 +188,7 @@ update-all:
 
 update-wiki:
 		git clone git@github.com:bravoure/lucy.wiki.git wiki-tmp
+		cd wiki-tmp && git rev-parse HEAD > version.txt
 		rm -rf wiki-tmp/.git
 		cp -rf wiki-tmp/. wiki
 		rm -rf wiki-tmp
