@@ -163,7 +163,7 @@ local-config:
 		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >backend/config/local_config.php
 
 set-login-password:
-		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users SET password = "$2y$13$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
+		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users SET password = "$$2y$$13$$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
 
 set-access-tokens:
 		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "csAyjOAtaxecSaivPnqR0oY3pBKryErL" WHERE name = "Server to server"';
