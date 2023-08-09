@@ -213,6 +213,7 @@ update-workflows:
 		curl -o .github/workflows/ready-for-review.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/ready-for-review.yml
 		curl -o .github/workflows/create-documentation.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/create-documentation.yml
 		curl -o .github/workflows/sync-assets.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/sync-assets.yml
+		curl -o .github/workflows/sync-assets.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/sync-assets-manual.yml
 
 update-general:
 		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
