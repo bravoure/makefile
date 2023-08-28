@@ -235,3 +235,6 @@ test-lighthouse:
 		@echo "\033[0;32m Creating desktop lighthouse tests\033[0m"
 		cd lighthouse/mobile && for url in $$(cat ../urls.txt); do lighthouse "$$url" --chrome-flags="--headless" --preset=desktop --view --extra-headers="{\"Authorization\":\"Basic YnJhdm91cmU6ZGV2ZWxvcG1lbnQ=\"}"; done
 		rm lighthouse/urls.txt
+
+set-terraform-settings:
+		 cat terraform/settings.tfvars.example | op inject -f --out-file terraform/settings.tfvars
