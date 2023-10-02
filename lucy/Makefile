@@ -185,6 +185,7 @@ update-all:
 		make update-general
 		make update-workflows
 		make update-wiki
+		make update-image-component
 
 update-wiki:
 		git clone git@github.com:bravoure/lucy.wiki.git wiki-tmp
@@ -218,6 +219,10 @@ update-workflows:
 update-general:
 		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
 		curl -o phpstan.neon https://raw.githubusercontent.com/bravoure/general-config/main/phpstan.neon
+
+update-image-component:
+		curl -o frontend/components/Image.tsx https://raw.githubusercontent.com/bravoure/lucy-component/main/Image.tsx
+		curl -o frontend/interfaces/image.ts https://raw.githubusercontent.com/bravoure/lucy-component/main/image.ts
 
 test-lighthouse:
 		mkdir -p lighthouse
