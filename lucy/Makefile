@@ -87,7 +87,7 @@ install-part-2:
 		@echo "\033[0;32m****                                                 ****\033[0m"
 		@echo "\033[0;32m*********************************************************\033[0m"
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g npm
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && npm install && npm install husky --save-dev && rm -f .husky/pre-commit && npx husky add .husky/pre-commit "cd frontend && . \$${NVM_DIR}/nvm.sh --no-use && nvm install && npm run lint-staged"
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && npm install && npm install husky --save-dev && rm -f .husky/pre-commit && npx husky add .husky/pre-commit "cd frontend && . \$${NVM_DIR}/nvm.sh --no-use && nvm install && npx lint-staged"
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run dev
 
 down:
