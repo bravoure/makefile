@@ -47,8 +47,8 @@ up-c:
 up-part-2:
 		make composer-install
 		docker-compose up -d webserver queue redis backend database
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && yarn install && npx browserslist@latest --update-db && yarn run dev
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g npm
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run dev
 
 up-production-build:
 		make env-setup
@@ -56,7 +56,7 @@ up-production-build:
 		rm -rf frontend/.next
 		make composer-install
 		docker-compose up -d webserver queue redis backend database
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && yarn install && npx browserslist@latest --update-db && yarn build && yarn start
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run build && npm run start
 
 install:
 		@echo "\033[0;32mInstalling the project.\033[0m"
@@ -86,9 +86,9 @@ install-part-2:
 		@echo "\033[0;32m****               \033[0mMake something epic!\033[0;32m              ****\033[0m"
 		@echo "\033[0;32m****                                                 ****\033[0m"
 		@echo "\033[0;32m*********************************************************\033[0m"
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g yarn
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && yarn install && yarn husky install && rm -f .husky/pre-commit && yarn husky add .husky/pre-commit "cd frontend && . \$${NVM_DIR}/nvm.sh --no-use && nvm install && yarn lint-staged"
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && yarn install && npx browserslist@latest --update-db && yarn run dev
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g npm
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && cd .. && npm install && npm install husky --save-dev && rm -f .husky/pre-commit && npx husky add .husky/pre-commit "cd frontend && . \$${NVM_DIR}/nvm.sh --no-use && nvm install && npm run lint-staged"
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run dev
 
 down:
 		@echo "Stopping project."
@@ -101,7 +101,7 @@ sync:
 		docker-compose run --rm queue php craft project-config/apply
 
 sync-fast:
-		@echo "Syncing project. This can take a minute. \033[0;31mWARNING, without yarn and composer install \033[0m"
+		@echo "Syncing project. This can take a minute. \033[0;31mWARNING, without npm and composer install \033[0m"
 		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
 		docker-compose run --rm queue php craft project-config/apply
 
@@ -177,7 +177,7 @@ translate:
 		docker-compose run --rm php-cs-fixer
 
 fix-frontend:
-		cd frontend && yarn install && yarn lint-fix
+		cd frontend && npm install && npm run lint-fix
 
 update-all:
 		make update-makefile
