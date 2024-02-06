@@ -200,20 +200,21 @@ update-docker-compose:
 		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
 
 update-workflows:
-		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/deploy-to-test.yml
-		curl -o .github/workflows/feature-draft-pull-request.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/feature-draft-pull-request.yml
-		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/format-php.yml
-		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-hotfix.yml
-		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/new-release.yml
-		curl -o .github/workflows/phone-home.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/phone-home.yml
-		curl -o .github/workflows/publish-new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/publish-new-release.yml
-		curl -o .github/workflows/pull-request-check-develop.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-develop.yml
-		curl -o .github/workflows/pull-request-check-main.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-main.yml
-		curl -o .github/workflows/pull-request-check-trigger.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/pull-request-check-trigger.yml
-		curl -o .github/workflows/ready-for-review.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/ready-for-review.yml
-		curl -o .github/workflows/create-documentation.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/create-documentation.yml
-		curl -o .github/workflows/sync-assets.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/sync-assets.yml
-		curl -o .github/workflows/sync-assets-manual.yml https://raw.githubusercontent.com/bravoure/action-templates/main/templates/sync-assets-manual.yml
+		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/deploy-to-test.yml
+		curl -o .github/workflows/feature-draft-pull-request.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/feature-draft-pull-request.yml
+		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/format-php.yml
+		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/new-hotfix.yml
+		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/new-release.yml
+		curl -o .github/workflows/phone-home.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/phone-home.yml
+		curl -o .github/workflows/publish-new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/publish-new-release.yml
+		curl -o .github/workflows/pull-request-check-develop.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/pull-request-check-develop.yml
+		curl -o .github/workflows/pull-request-check-main.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/pull-request-check-main.yml
+		curl -o .github/workflows/pull-request-check-trigger.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/pull-request-check-trigger.yml
+		curl -o .github/workflows/ready-for-review.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/ready-for-review.yml
+		curl -o .github/workflows/create-documentation.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/create-documentation.yml
+		curl -o .github/workflows/sync-assets.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/sync-assets.yml
+		curl -o .github/workflows/sync-assets-manual.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/sync-assets-manual.yml
+		curl -o .github/workflows/react-tests.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/react-tests.yml
 
 update-general:
 		curl -o backend/config/general.php https://raw.githubusercontent.com/bravoure/general-config/main/general.php
