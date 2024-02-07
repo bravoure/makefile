@@ -10,6 +10,7 @@ env-setup:
 		@echo "\033[0;32m***************************************************************\033[0m"
 		cat backend/.env.example | ENV=local op inject -f --out-file backend/.env
 		cat frontend/.env.local.example | ENV=local op inject -f --out-file frontend/.env.local
+		cat ludwig/.env.example | ENV=local op inject -f --out-file ludwig/.env
 
 freelance-env-setup:
 		test -f backend/.env.freelance.example || (printf "# Ask bravoure to get you .env file contents" > backend/.env.freelance.example && echo "\033[0;32mAsk bravoure to get you backend/.env.freelance.example file contents.\033[0m" && false;)
@@ -46,7 +47,7 @@ up-c:
 
 up-part-2:
 		make composer-install
-		docker-compose up -d webserver queue redis backend database
+		docker-compose up -d webserver queue redis backend database ludwig
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g npm
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run dev
 
@@ -55,8 +56,8 @@ up-production-build:
 		@echo "Starting local production build"
 		rm -rf frontend/.next
 		make composer-install
-		docker-compose up -d webserver queue redis backend database
-		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run build && npm run start
+		docker-compose up -d webserver queue redis backend database ludwig
+		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm build && npm start
 
 install:
 		@echo "\033[0;32mInstalling the project.\033[0m"
@@ -79,7 +80,8 @@ install-part-2:
 		docker-compose run --rm queue php craft resave/entries
 		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
 		make down
-		docker-compose up -d webserver queue redis backend database
+		docker-compose up -d webserver queue redis backend database ludwig
+		docker compose exec ludwig php artisan migrate
 		@echo "\033[0;32m*********************************************************\033[0m"
 		@echo "\033[0;32m****                                                 ****\033[0m"
 		@echo "\033[0;32m****   \033[0mhttp://localhost:8080 ready for some work!\033[0;32m    ****\033[0m"
@@ -113,6 +115,7 @@ sync-force:
 
 composer-dump:
 		docker-compose run --rm composer composer dump
+		docker-compose run --rm composer-ludwig composer dump
 
 composer-update:
 		docker-compose run --rm composer composer update
@@ -121,16 +124,22 @@ composer-require:
 		@read -p "Enter Package: " package; \
 		docker-compose run --rm composer composer require $$package
 
+composer-require-ludwig:
+		@read -p "Enter Package: " package; \
+		docker-compose run --rm composer-ludwig composer require $$package
+
 composer-remove:
 		@read -p "Enter Package: " package; \
 		docker-compose run --rm composer composer remove $$package
 
 composer-install:
 		docker-compose run --rm composer composer install
+		docker-compose run --rm composer-ludwig composer install
 
 apply-code-styles:
 		@echo "Applying code styles"
 		docker-compose run --rm php-cs-fixer
+		docker-compose run --rm php-cs-fixer-ludwig
 
 logs-backend:
 		docker-compose logs backend
@@ -236,6 +245,3 @@ test-lighthouse:
 		@echo "\033[0;32m Creating desktop lighthouse tests\033[0m"
 		cd lighthouse/mobile && for url in $$(cat ../urls.txt); do lighthouse "$$url" --chrome-flags="--headless" --preset=desktop --view --extra-headers="{\"Authorization\":\"Basic YnJhdm91cmU6ZGV2ZWxvcG1lbnQ=\"}"; done
 		rm lighthouse/urls.txt
-
-set-terraform-settings:
-		 cat terraform/settings.tfvars.example | op inject -f --out-file terraform/settings.tfvars
