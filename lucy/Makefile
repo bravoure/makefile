@@ -101,6 +101,7 @@ sync:
 		make composer-install
 		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
 		docker-compose run --rm queue php craft project-config/apply
+		make graphql-ts-types
 
 sync-fast:
 		@echo "Syncing project. This can take a minute. \033[0;31mWARNING, without npm and composer install \033[0m"
@@ -119,6 +120,7 @@ composer-dump:
 
 composer-update:
 		docker-compose run --rm composer composer update
+		docker-compose run --rm composer-ludwig composer update
 
 composer-require:
 		@read -p "Enter Package: " package; \
@@ -212,6 +214,7 @@ update-workflows:
 		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/deploy-to-test.yml
 		curl -o .github/workflows/feature-draft-pull-request.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/feature-draft-pull-request.yml
 		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/format-php.yml
+		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/format-php-ludwig.yml
 		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/new-hotfix.yml
 		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/new-release.yml
 		curl -o .github/workflows/phone-home.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/phone-home.yml
@@ -245,3 +248,9 @@ test-lighthouse:
 		@echo "\033[0;32m Creating desktop lighthouse tests\033[0m"
 		cd lighthouse/mobile && for url in $$(cat ../urls.txt); do lighthouse "$$url" --chrome-flags="--headless" --preset=desktop --view --extra-headers="{\"Authorization\":\"Basic YnJhdm91cmU6ZGV2ZWxvcG1lbnQ=\"}"; done
 		rm lighthouse/urls.txt
+
+graphql-ts-types:
+		docker-compose run --rm queue php craft graphql/dump-schema --token csAyjOAtaxecSaivPnqR0oY3pBKryErL
+		mv backend/server_to_server.graphql frontend/server_to_server.graphql
+		cd frontend && npm run codegen
+		rm frontend/server_to_server.graphql
