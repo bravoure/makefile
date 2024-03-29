@@ -81,7 +81,8 @@ install-part-2:
 		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
 		make down
 		docker-compose up -d webserver queue redis backend database ludwig
-		docker compose exec ludwig php artisan migrate
+		docker compose exec ludwig php ludwig/artisan migrate
+		make generate-ide-helper
 		@echo "\033[0;32m*********************************************************\033[0m"
 		@echo "\033[0;32m****                                                 ****\033[0m"
 		@echo "\033[0;32m****   \033[0mhttp://localhost:8080 ready for some work!\033[0;32m    ****\033[0m"
@@ -101,6 +102,7 @@ sync:
 		make composer-install
 		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
 		docker-compose run --rm queue php craft project-config/apply
+		docker compose run --rm queue-ludwig php ludwig/artisan migrate
 		make graphql-ts-types
 
 sync-fast:
@@ -114,12 +116,20 @@ sync-force:
 		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
 		docker-compose run --rm queue php craft project-config/apply --force
 
+composer-install:
+		docker-compose run --rm composer composer install
+		docker-compose run --rm composer-ludwig composer install
+		make generate-ide-helper
+
 composer-dump:
 		docker-compose run --rm composer composer dump
 		docker-compose run --rm composer-ludwig composer dump
+		make generate-ide-helper
 
 composer-update:
 		docker-compose run --rm composer composer update
+
+composer-update-ludwig:
 		docker-compose run --rm composer-ludwig composer update
 
 composer-require:
@@ -129,14 +139,15 @@ composer-require:
 composer-require-ludwig:
 		@read -p "Enter Package: " package; \
 		docker-compose run --rm composer-ludwig composer require $$package
+		make generate-ide-helper
 
 composer-remove:
 		@read -p "Enter Package: " package; \
 		docker-compose run --rm composer composer remove $$package
 
-composer-install:
-		docker-compose run --rm composer composer install
-		docker-compose run --rm composer-ludwig composer install
+composer-remove-ludwig:
+		@read -p "Enter Package: " package; \
+		docker-compose run --rm composer-ludwig composer remove $$package
 
 apply-code-styles:
 		@echo "Applying code styles"
@@ -249,8 +260,16 @@ test-lighthouse:
 		cd lighthouse/mobile && for url in $$(cat ../urls.txt); do lighthouse "$$url" --chrome-flags="--headless" --preset=desktop --view --extra-headers="{\"Authorization\":\"Basic YnJhdm91cmU6ZGV2ZWxvcG1lbnQ=\"}"; done
 		rm lighthouse/urls.txt
 
+generate-ide-helper:
+		docker compose up -d ludwig
+		docker compose exec ludwig php ludwig/artisan ide-helper:generate
+		docker compose exec ludwig php ludwig/artisan ide-helper:meta
+
 graphql-ts-types:
 		docker-compose run --rm queue php craft graphql/dump-schema --token csAyjOAtaxecSaivPnqR0oY3pBKryErL
 		mv backend/server_to_server.graphql frontend/server_to_server.graphql
 		cd frontend && npm run codegen
 		rm frontend/server_to_server.graphql
+
+index-assets:
+		docker-compose run --rm queue php craft  index-assets/all
