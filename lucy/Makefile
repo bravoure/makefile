@@ -225,7 +225,7 @@ update-workflows:
 		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/deploy-to-test.yml
 		curl -o .github/workflows/feature-draft-pull-request.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/feature-draft-pull-request.yml
 		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/format-php.yml
-		curl -o .github/workflows/format-php.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/format-php-ludwig.yml
+		curl -o .github/workflows/format-php-ludwig.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/format-php-ludwig.yml
 		curl -o .github/workflows/new-hotfix.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/new-hotfix.yml
 		curl -o .github/workflows/new-release.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/new-release.yml
 		curl -o .github/workflows/phone-home.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/phone-home.yml
