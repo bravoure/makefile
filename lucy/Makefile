@@ -47,7 +47,7 @@ up-c:
 
 up-part-2:
 		make composer-install
-		docker-compose up -d webserver queue redis backend database ludwig
+		docker compose up -d webserver queue redis backend database ludwig
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm i -g npm
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm run dev
 
@@ -56,7 +56,7 @@ up-production-build:
 		@echo "Starting local production build"
 		rm -rf frontend/.next
 		make composer-install
-		docker-compose up -d webserver queue redis backend database ludwig
+		docker compose up -d webserver queue redis backend database ludwig
 		cd frontend && . ${NVM_DIR}/nvm.sh --no-use && nvm install && npm install && npx browserslist@latest --update-db && npm build && npm start
 
 install:
@@ -72,15 +72,15 @@ install-f:
 install-part-2:
 		printf "<?php \n use craft\config\GeneralConfig; \n function localConfig(GeneralConfig \$$config): void \n {\n  \$$config->allowAdminChanges(false); \n }" > backend/config/local_config.php
 		make composer-install
-		docker-compose up -d database
+		docker compose up -d database
 		sleep 10
-		docker-compose run --rm queue php craft install/craft --email login@bravoure.nl --password bravoure --interactive=0
-#		docker-compose run --rm queue php craft setup/php-session-table
-		docker-compose run --rm queue php craft project-seeder-module/seeder/seed-db
-		docker-compose run --rm queue php craft resave/entries
-		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
+		docker compose run --rm queue php craft install/craft --email login@bravoure.nl --password bravoure --interactive=0
+#		docker compose run --rm queue php craft setup/php-session-table
+		docker compose run --rm queue php craft project-seeder-module/seeder/seed-db
+		docker compose run --rm queue php craft resave/entries
+		docker compose run --rm database mysql --host=database --user=craft --password=craft --database=craft --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
 		make down
-		docker-compose up -d webserver queue redis backend database ludwig
+		docker compose up -d webserver queue redis backend database ludwig
 		docker compose exec ludwig php ludwig/artisan migrate
 		make generate-ide-helper
 		@echo "\033[0;32m*********************************************************\033[0m"
@@ -95,108 +95,108 @@ install-part-2:
 
 down:
 		@echo "Stopping project."
-		docker-compose down
+		docker compose down
 
 sync:
 		@echo "Syncing project. This can take a minute."
 		make composer-install
-		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
-		docker-compose run --rm queue php craft project-config/apply
+		docker compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker compose run --rm queue php craft project-config/apply
 		docker compose run --rm queue-ludwig php ludwig/artisan migrate
 		make graphql-ts-types
 
 sync-fast:
 		@echo "Syncing project. This can take a minute. \033[0;31mWARNING, without npm and composer install \033[0m"
-		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
-		docker-compose run --rm queue php craft project-config/apply
+		docker compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker compose run --rm queue php craft project-config/apply
 
 sync-force:
 		@echo "Syncing project. This can take a minute."
 		make composer-install
-		docker-compose run --rm queue php craft migrate/all --no-backup --interactive=0
-		docker-compose run --rm queue php craft project-config/apply --force
+		docker compose run --rm queue php craft migrate/all --no-backup --interactive=0
+		docker compose run --rm queue php craft project-config/apply --force
 
 composer-install:
-		docker-compose run --rm composer composer install
-		docker-compose run --rm composer-ludwig composer install
+		docker compose run --rm composer composer install
+		docker compose run --rm composer-ludwig composer install
 		make generate-ide-helper
 
 composer-dump:
-		docker-compose run --rm composer composer dump
-		docker-compose run --rm composer-ludwig composer dump
+		docker compose run --rm composer composer dump
+		docker compose run --rm composer-ludwig composer dump
 		make generate-ide-helper
 
 composer-update:
-		docker-compose run --rm composer composer update
+		docker compose run --rm composer composer update
 
 composer-update-ludwig:
-		docker-compose run --rm composer-ludwig composer update
+		docker compose run --rm composer-ludwig composer update
 
 composer-require:
 		@read -p "Enter Package: " package; \
-		docker-compose run --rm composer composer require $$package
+		docker compose run --rm composer composer require $$package
 
 composer-require-ludwig:
 		@read -p "Enter Package: " package; \
-		docker-compose run --rm composer-ludwig composer require $$package
+		docker compose run --rm composer-ludwig composer require $$package
 		make generate-ide-helper
 
 composer-remove:
 		@read -p "Enter Package: " package; \
-		docker-compose run --rm composer composer remove $$package
+		docker compose run --rm composer composer remove $$package
 
 composer-remove-ludwig:
 		@read -p "Enter Package: " package; \
-		docker-compose run --rm composer-ludwig composer remove $$package
+		docker compose run --rm composer-ludwig composer remove $$package
 
 apply-code-styles:
 		@echo "Applying code styles"
-		docker-compose run --rm php-cs-fixer
-		docker-compose run --rm php-cs-fixer-ludwig
+		docker compose run --rm php-cs-fixer
+		docker compose run --rm php-cs-fixer-ludwig
 
 logs-backend:
-		docker-compose logs backend
+		docker compose logs backend
 
 logs-backend-follow:
-		docker-compose logs -f backend
+		docker compose logs -f backend
 
 logs-webserver:
-		docker-compose logs webserver
+		docker compose logs webserver
 
 logs-webserver-follow:
-		docker-compose logs -f webserver
+		docker compose logs -f webserver
 
 logs-queue:
-		docker-compose logs queue
+		docker compose logs queue
 
 logs-queue-follow:
-		docker-compose logs -f queue
+		docker compose logs -f queue
 
 logs-craft:
-		docker-compose exec backend tail /var/www/backend/storage/logs/web.log
+		docker compose exec backend tail /var/www/backend/storage/logs/web.log
 
 logs-craft-follow:
-		docker-compose exec backend tail -f /var/www/backend/storage/logs/web.log
+		docker compose exec backend tail -f /var/www/backend/storage/logs/web.log
 
 restart-webserver:
-		docker-compose restart webserver
+		docker compose restart webserver
 
 local-config:
 		printf "%s\n" "<?php" "	return [" "		'allowAdminChanges' => false" "	];" >backend/config/local_config.php
 
 set-login-password:
-		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users SET password = "$$2y$$13$$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
+		docker compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE users SET password = "$$2y$$13$$qyPE3yKmgnAWAb9sl87tBO.OUNQCJ6FDCEfr1ZuhWoNuCcBPqAQ3C" WHERE email = "login@bravoure.nl"';
 
 set-access-tokens:
-		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "csAyjOAtaxecSaivPnqR0oY3pBKryErL" WHERE name = "Server to server"';
-		docker-compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "X3B60fZSEBkt2cJqz6McUJwlwUJN4o4K" WHERE name = "Client to server"';
+		docker compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "csAyjOAtaxecSaivPnqR0oY3pBKryErL" WHERE name = "Server to server"';
+		docker compose run --rm database mysql --host=database --user=craft --password=craft --database=craft  --port=3306 --execute='UPDATE gqltokens SET accessToken = "X3B60fZSEBkt2cJqz6McUJwlwUJN4o4K" WHERE name = "Client to server"';
 
 delete-merged-branches:
 		git branch --merged| egrep -v "(^\*|master|develop|accept|test|main)" | xargs git branch -d
 
 translate:
 		php google-doc-translations.php
-		docker-compose run --rm php-cs-fixer
+		docker compose run --rm php-cs-fixer
 
 fix-frontend:
 		cd frontend && npm install && npm run lint-fix
@@ -218,8 +218,8 @@ update-wiki:
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/lucy/Makefile
 
-update-docker-compose:
-		curl -o docker-compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
+update-docker compose:
+		curl -o docker compose.yml https://raw.githubusercontent.com/bravoure/docker compose/main/lucy/docker compose.yaml
 
 update-workflows:
 		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/deploy-to-test.yml
@@ -266,10 +266,8 @@ generate-ide-helper:
 		docker compose exec ludwig php ludwig/artisan ide-helper:meta
 
 graphql-ts-types:
-		docker-compose run --rm queue php craft graphql/dump-schema --token csAyjOAtaxecSaivPnqR0oY3pBKryErL
+		docker compose run --rm queue php craft graphql/dump-schema --token csAyjOAtaxecSaivPnqR0oY3pBKryErL
 		mv backend/server_to_server.graphql frontend/server_to_server.graphql
-		cd frontend && npm run codegen
-		rm frontend/server_to_server.graphql
 
 index-assets:
-		docker-compose run --rm queue php craft  index-assets/all
+		docker compose run --rm queue php craft  index-assets/all
