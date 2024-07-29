@@ -203,7 +203,7 @@ fix-frontend:
 
 update-all:
 		make update-makefile
-		make update-docker compose
+		make update-docker-compose
 		make update-general
 		make update-workflows
 		make update-wiki
