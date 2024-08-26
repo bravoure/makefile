@@ -81,7 +81,7 @@ install-part-2:
 		docker compose run --rm database mysql --host=database --user=craft --password=craft --database=craft --port=3306 --execute='UPDATE users, userpreferences SET userpreferences.preferences = "{\"language\":\"en-GB\",\"showFieldHandles\":true}" WHERE users.id = userpreferences.userId AND email = "login@bravoure.nl"';
 		make down
 		docker compose up -d webserver queue redis backend database ludwig
-		docker compose exec ludwig php ludwig/artisan migrate
+		docker compose exec ludwig php artisan migrate
 		make generate-ide-helper
 		@echo "\033[0;32m*********************************************************\033[0m"
 		@echo "\033[0;32m****                                                 ****\033[0m"
@@ -102,7 +102,7 @@ sync:
 		make composer-install
 		docker compose run --rm queue php craft migrate/all --no-backup --interactive=0
 		docker compose run --rm queue php craft project-config/apply
-		docker compose run --rm queue-ludwig php ludwig/artisan migrate
+		docker compose run --rm queue-ludwig php artisan migrate
 		make graphql-ts-types
 
 sync-fast:
@@ -262,8 +262,8 @@ test-lighthouse:
 
 generate-ide-helper:
 		docker compose up -d ludwig
-		docker compose exec ludwig php ludwig/artisan ide-helper:generate
-		docker compose exec ludwig php ludwig/artisan ide-helper:meta
+		docker compose exec ludwig php artisan ide-helper:generate
+		docker compose exec ludwig php artisan ide-helper:meta
 
 graphql-ts-types:
 		docker compose run --rm queue php craft graphql/dump-schema --token csAyjOAtaxecSaivPnqR0oY3pBKryErL
