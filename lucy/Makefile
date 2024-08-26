@@ -224,7 +224,7 @@ update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/lucy/Makefile
 
 update-docker-compose:
-		curl -o docker compose.yml https://raw.githubusercontent.com/bravoure/docker compose/main/lucy/docker compose.yaml
+		curl -o docker compose.yml https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/docker-compose.yaml
 
 update-workflows:
 		curl -o .github/workflows/deploy-to-test.yml https://raw.githubusercontent.com/bravoure/action-templates/v2/templates/deploy-to-test.yml
