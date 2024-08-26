@@ -207,6 +207,7 @@ update-all:
 		make update-general
 		make update-workflows
 		make update-wiki
+		make update-webserver
 
 update-wiki:
 		git clone git@github.com:bravoure/lucy.wiki.git wiki-tmp
@@ -215,6 +216,9 @@ update-wiki:
 		cp -rf wiki-tmp/. wiki
 		rm -rf wiki-tmp
 
+update-webserver:
+		curl -o config/local/app.conf https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/config/webserver/local/app.conf
+		curl -o config/github-actions/app.conf https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/config/webserver/github-actions/app.conf
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/lucy/Makefile
 
