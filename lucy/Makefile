@@ -223,7 +223,7 @@ update-webserver:
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/lucy/Makefile
 
-update-docker compose:
+update-docker-compose:
 		curl -o docker compose.yml https://raw.githubusercontent.com/bravoure/docker compose/main/lucy/docker compose.yaml
 
 update-workflows:
