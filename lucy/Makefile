@@ -218,8 +218,8 @@ update-wiki:
 		rm -rf wiki-tmp
 
 update-webserver:
-		curl -o config/local/app.conf https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/config/webserver/local/app.conf
-		curl -o config/github-actions/app.conf https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/config/webserver/github-actions/app.conf
+		curl -o config/webserver/local/app.conf https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/config/webserver/local/app.conf
+		curl -o config/webserver/github-actions/app.conf https://raw.githubusercontent.com/bravoure/docker-compose/main/lucy/config/webserver/github-actions/app.conf
 update-makefile:
 		curl -o Makefile https://raw.githubusercontent.com/bravoure/makefile/main/lucy/Makefile
 
