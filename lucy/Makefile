@@ -20,6 +20,7 @@ freelance-env-setup:
 
 up:
 		@echo "\033[0;32mStarting up project\033[0m"
+		docker compose pull
 		make env-setup
 		make up-part-2
 
