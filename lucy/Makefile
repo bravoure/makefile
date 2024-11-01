@@ -274,5 +274,10 @@ graphql-ts-types:
 		docker compose run --rm queue php craft graphql/dump-schema --token csAyjOAtaxecSaivPnqR0oY3pBKryErL
 		mv backend/server_to_server.graphql frontend/server_to_server.graphql
 
+graphql-php-types:
+		docker compose run --rm queue php craft graphql/dump-schema --token roKKFX55TGAbtco3cyFcfwe5X3uRhoPK
+		mv backend/ludwig_to_server.graphql ludwig/app/GraphQL/Schema/ludwig_to_server.graphql
+		docker compose run --rm queue-ludwig php artisan ludwig:generate-graphql-resources
+
 index-assets:
 		docker compose run --rm queue php craft  index-assets/all
